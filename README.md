@@ -2,7 +2,7 @@
 
 Analysis of over- and under-splitting of clustering for snmC2T-seq datasets.
 
-This repositoyr is contains code and examples to evaluate the level of over- and under-splitting of a given clustering of a snmC2T-seq dataset. snmC2T-seq is a multi-modal single-cell sequencing method by Luo et al. to measure transcriptomes, DNA methylomes, and chromatin accessibilities at single nucleus level [Luo et al 2019 BioRxiv](https://www.biorxiv.org/content/10.1101/2019.12.11.873398v1).
+This repository contains code and examples to evaluate the level of over- and under-splitting of a given clustering of a snmC2T-seq dataset. snmC2T-seq is a multi-modal single-cell sequencing method by [Luo et al.](https://www.biorxiv.org/content/10.1101/2019.12.11.873398v1) to measure transcriptomes, DNA methylomes, and chromatin accessibilities at single nucleus level. Taking advantage of the multi-modal measurements, this analysis targets the question of lumpers-and-splitters in the practice of single-cell sequencing clusterings. By cross referencing the complimentary data modalities, we developed metrics and visualizations to evaluate whether a given cell cluster is over-split or under-split.
 
 For more information and to cite this work:
 - [Luo, C. et al. Single nucleus multi-omics links human cortical cell regulatory genome diversity to disease risk variants. bioRxiv 2019.12.11.873398 (2019) doi:10.1101/2019.12.11.873398](https://www.biorxiv.org/content/10.1101/2019.12.11.873398v1)
@@ -21,6 +21,14 @@ Step 2: Set up a conda environment and install dependent packages. (Skip this st
 ```bash
 conda env create -f environment.yml # create an env named scf_dev
 source activate scf_dev
+```
+
+Step 3: Download the snmC2T-seq data using [this](https://drive.google.com/u/0/uc?export=download&confirm=FGn2&id=1VnFHluULJJ-hKJzwJFb7TPDpRPgrUw-I) google drive link. (gene-by-cell matrices and metadata)
+
+Step 4: Uncompress the data and put it under the directory of this repository
+```bash
+# assuming mctseq_over_under_splitting is the current directory
+tar -xvf data.tar.gz
 ```
 
 ## Usage
