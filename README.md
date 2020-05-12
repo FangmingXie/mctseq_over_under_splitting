@@ -7,7 +7,7 @@ This repository contains code and examples to evaluate the level of over- and un
 For more information and to cite this work:
 - [Luo, C. et al. Single nucleus multi-omics links human cortical cell regulatory genome diversity to disease risk variants. bioRxiv 2019.12.11.873398 (2019) doi:10.1101/2019.12.11.873398](https://www.biorxiv.org/content/10.1101/2019.12.11.873398v1)
 
-Code contributors: [Fangming Xie](mailto:f7xie@ucsd.edu)
+Code contributor: [Fangming Xie](mailto:f7xie@ucsd.edu)
 Contact: [Eran Mukamel](mailto:emukamel@ucsd.edu)
 
 ## Installation
@@ -23,7 +23,7 @@ conda env create -f environment.yml # create an env named scf_dev
 source activate scf_dev
 ```
 
-Step 3: Download the snmC2T-seq data using [this](https://drive.google.com/u/0/uc?export=download&confirm=FGn2&id=1VnFHluULJJ-hKJzwJFb7TPDpRPgrUw-I) google drive link. (gene-by-cell matrices and metadata)
+Step 3: Download the snmC2T-seq data using [this](https://drive.google.com/file/d/1VnFHluULJJ-hKJzwJFb7TPDpRPgrUw-I/view?usp=sharing) google drive link. (gene-by-cell matrices and metadata)
 
 Step 4: Uncompress the data and put it under the directory of this repository
 ```bash
