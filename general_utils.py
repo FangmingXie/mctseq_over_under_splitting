@@ -197,3 +197,66 @@ def dedup_array_elements(x, empty_string=''):
 def zscore(x, offset=1e-7, ddof=1):
     return (x - np.mean(x))/(np.std(x, ddof=ddof) + offset)
 
+
+# smooth-within modality
+def smooth_in_modality(counts_matrix, norm_counts_matrix, k, ka, npc=100, sigma=1.0, p=0.1, drop_npc=0):
+    """Smooth a data matrix
+    
+    Arguments:
+        - counts_matrix (pandas dataframe, feature by cell)
+        - norm_counts_matrix (pandas dataframe, feature by cell) log10(CPM+1)
+        - k (number of nearest neighbors)
+    Return:
+        - smoothed cells_matrix (pandas dataframe)
+        - markov affinity matrix
+    """
+    import fbpca
+    import knn_utils
+    
+    assert counts_matrix.shape[1] == norm_counts_matrix.shape[1] 
+
+    c = norm_counts_matrix.columns.values
+    N = len(c)
+
+    # reduce dimension fast version
+    U, s, Vt = fbpca.pca(norm_counts_matrix.T.values, k=npc)
+    pcs = U.dot(np.diag(s))
+    if drop_npc != 0:
+        pcs = pcs[:, drop_npc:]
+
+    # get k nearest neighbor distances fast version 
+    inds, dists = knn_utils.gen_knn_annoy(pcs, k, form='list', 
+                                                metric='euclidean', n_trees=10, search_k=-1, verbose=True, 
+                                                include_distances=True)
+    
+    # remove itself
+    dists = dists[:, 1:]
+    inds = inds[:, 1:]
+
+    # normalize by ka's distance 
+    dists = (dists/(dists[:, ka].reshape(-1, 1)))
+
+    # gaussian kernel
+    adjs = np.exp(-((dists**2)/(sigma**2))) 
+
+    # construct a sparse matrix 
+    cols = np.ravel(inds)
+    rows = np.repeat(np.arange(N), k-1) # remove itself
+    vals = np.ravel(adjs)
+    A = sparse.csr_matrix((vals, (rows, cols)), shape=(N, N))
+
+    # Symmetrize A (union of connection)
+    A = A + A.T
+
+    # normalization fast (A is now a weight matrix excluding itself)
+    degrees = A.sum(axis=1)
+    A = sparse.diags(1.0/np.ravel(degrees)).dot(A)
+
+    # include itself
+    eye = sparse.identity(N)
+    A = p*eye + (1-p)*A
+    
+    # smooth fast (future?)
+    counts_matrix_smoothed = pd.DataFrame((A.dot(counts_matrix.T)).T, 
+                                         columns=counts_matrix.columns, index=counts_matrix.index)
+    return counts_matrix_smoothed, A
